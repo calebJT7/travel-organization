@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Viajes - Tu Compañero de Aventuras</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navegación -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-logo">
+                <i class="fas fa-plane"></i>
+                TravelPlan
+            </h1>
+            <div class="nav-controls">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <!-- Elimina el botón de cerrar sesión -->
+                <!-- <button class="user-menu" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Cerrar Sesión
+                </button> -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h2 class="hero-title">Planifica tu próxima aventura</h2>
+                <p class="hero-subtitle">Organiza tus viajes, gestiona gastos y no olvides nada importante</p>
+            </div>
+        </section>
+
+        <!-- Estadísticas Rápidas -->
+        <section class="stats">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="totalTrips">0</span>
+                    <span class="stat-label">Viajes Planeados</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="totalBudget">$0</span>
+                    <span class="stat-label">Presupuesto Total</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="totalTodos">0</span>
+                    <span class="stat-label">Tareas Pendientes</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Secciones Principales -->
+        <div class="content-grid">
+            <!-- Sección de Viajes -->
+            <section class="section">
+                <div class="section-header">
+                    <h3><i class="fas fa-suitcase"></i> Mis Viajes</h3>
+                    <button class="btn-primary" onclick="toggleModal('tripModal')">
+                        <i class="fas fa-plus"></i> Agregar Viaje
+                    </button>
+                </div>
+                <div class="trips-grid" id="tripCards">
+                    <!-- Los viajes se renderizarán aquí -->
+                </div>
+            </section>
+
+            <!-- Sección de Tareas -->
+            <section class="section">
+                <div class="section-header">
+                    <h3><i class="fas fa-clipboard-list"></i> Lista de Tareas</h3>
+                    <button class="btn-secondary" onclick="toggleModal('todoModal')">
+                        <i class="fas fa-plus"></i> Agregar Tarea
+                    </button>
+                </div>
+                <div class="todo-container">
+                    <ul class="todo-list" id="todoList">
+                        <!-- Las tareas se renderizarán aquí -->
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Sección de Gastos -->
+            <section class="section">
+                <div class="section-header">
+                    <h3><i class="fas fa-receipt"></i> Control de Gastos</h3>
+                    <button class="btn-accent" onclick="toggleModal('expenseModal')">
+                        <i class="fas fa-plus"></i> Agregar Gasto
+                    </button>
+                </div>
+                <div class="expenses-summary">
+                    <div class="total-expenses" id="totalExpenses">Total: $0</div>
+                </div>
+                <ul class="expense-list" id="expenseList">
+                    <!-- Los gastos se renderizarán aquí -->
+                </ul>
+            </section>
+
+            <!-- Sección de Reservas -->
+            <section class="section">
+                <div class="section-header">
+                    <h3><i class="fas fa-ticket-alt"></i> Reservas</h3>
+                    <button class="btn-info" onclick="toggleModal('bookingModal')">
+                        <i class="fas fa-plus"></i> Agregar Reserva
+                    </button>
+                </div>
+                <div class="bookings-container">
+                    <ul class="booking-list" id="bookingList">
+                        <!-- Las reservas se renderizarán aquí -->
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal para Agregar Viaje -->
+    <div class="modal" id="tripModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-map-marker-alt"></i> Nuevo Viaje</h3>
+                <button class="modal-close" onclick="toggleModal('tripModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form class="modal-form" id="tripForm">
+                <div class="form-group">
+                    <label for="destination">Destino</label>
+                    <input type="text" id="destination" placeholder="¿A dónde viajas?" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="startDate">Fecha de Inicio</label>
+                        <input type="date" id="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">Fecha de Fin</label>
+                        <input type="date" id="endDate" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="budget">Presupuesto</label>
+                    <input type="number" id="budget" placeholder="0" min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Descripción (opcional)</label>
+                    <textarea id="description" placeholder="Describe tu viaje..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="toggleModal('tripModal')">Cancelar</button>
+                    <button type="submit" class="btn-primary">Crear Viaje</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Agregar Tarea -->
+    <div class="modal" id="todoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-tasks"></i> Nueva Tarea</h3>
+                <button class="modal-close" onclick="toggleModal('todoModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form class="modal-form" id="todoForm">
+                <div class="form-group">
+                    <label for="todoTitle">Tarea</label>
+                    <input type="text" id="todoTitle" placeholder="¿Qué necesitas hacer?" required>
+                </div>
+                <div class="form-group">
+                    <label for="todoCategory">Categoría</label>
+                    <select id="todoCategory">
+                        <option value="general">General</option>
+                        <option value="documentos">Documentos</option>
+                        <option value="equipaje">Equipaje</option>
+                        <option value="reservas">Reservas</option>
+                        <option value="salud">Salud</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="todoPriority">Prioridad</label>
+                    <select id="todoPriority">
+                        <option value="baja">Baja</option>
+                        <option value="media">Media</option>
+                        <option value="alta">Alta</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="toggleModal('todoModal')">Cancelar</button>
+                    <button type="submit" class="btn-primary">Agregar Tarea</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Agregar Gasto -->
+    <div class="modal" id="expenseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-dollar-sign"></i> Nuevo Gasto</h3>
+                <button class="modal-close" onclick="toggleModal('expenseModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form class="modal-form" id="expenseForm">
+                <div class="form-group">
+                    <label for="expenseName">Concepto</label>
+                    <input type="text" id="expenseName" placeholder="¿En qué gastaste?" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="expenseAmount">Monto</label>
+                        <input type="number" id="expenseAmount" placeholder="0" min="0" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="expenseCategory">Categoría</label>
+                        <select id="expenseCategory">
+                            <option value="transporte">Transporte</option>
+                            <option value="alojamiento">Alojamiento</option>
+                            <option value="comida">Comida</option>
+                            <option value="actividades">Actividades</option>
+                            <option value="compras">Compras</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="expenseDate">Fecha</label>
+                    <input type="date" id="expenseDate" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="toggleModal('expenseModal')">Cancelar</button>
+                    <button type="submit" class="btn-primary">Agregar Gasto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Agregar Reserva -->
+    <div class="modal" id="bookingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-ticket-alt"></i> Nueva Reserva</h3>
+                <button class="modal-close" onclick="toggleModal('bookingModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form class="modal-form" id="bookingForm">
+                <div class="form-group">
+                    <label for="bookingType">Tipo</label>
+                    <select id="bookingType" required>
+                        <option value="estadia">Estadía</option>
+                        <option value="pasaje">Pasaje</option>
+                        <option value="tour">Tour</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bookingName">Nombre/Descripción</label>
+                    <input type="text" id="bookingName" placeholder="Ej: Hotel, Vuelo, etc." required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookingDate">Fecha</label>
+                        <input type="date" id="bookingDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookingAmount">Monto</label>
+                        <input type="number" id="bookingAmount" placeholder="0" min="0" step="0.01">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="toggleModal('bookingModal')">Cancelar</button>
+                    <button type="submit" class="btn-primary">Agregar Reserva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Overlay del Modal -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+
+    <!-- Botón Flotante para Acciones Rápidas -->
+    <div class="fab-container">
+        <button class="fab" onclick="toggleFabMenu()">
+            <i class="fas fa-plus"></i>
+        </button>
+        <div class="fab-menu" id="fabMenu">
+            <button class="fab-item" onclick="toggleModal('tripModal')">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Viaje</span>
+            </button>
+            <button class="fab-item" onclick="toggleModal('todoModal')">
+                <i class="fas fa-tasks"></i>
+                <span>Tarea</span>
+            </button>
+            <button class="fab-item" onclick="toggleModal('expenseModal')">
+                <i class="fas fa-dollar-sign"></i>
+                <span>Gasto</span>
+            </button>
+            <button class="fab-item" onclick="toggleModal('bookingModal')">
+                <i class="fas fa-ticket-alt"></i>
+                <span>Reserva</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
