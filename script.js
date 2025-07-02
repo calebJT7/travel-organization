@@ -3,9 +3,7 @@ let appState = {
     trips: [],
     todos: [],
     expenses: [],
-    currentUser: null,
-    theme: 'light',
-    fabMenuOpen: false
+    bookings: []
 };
 
 // Utilidades
@@ -27,7 +25,7 @@ const Utils = {
     },
 
     generateId: () => {
-        return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        return Date.now().toString(36) + Math.random().toString(36).substring(2);
     },
 
     validateEmail: (email) => {
@@ -50,7 +48,8 @@ const DataManager = {
         currentUser: null,
         trips: [],
         todos: [],
-        expenses: []
+        expenses: [],
+        bookings: []
     },
 
     saveData: function() {
@@ -117,14 +116,11 @@ const TripManager = {
         const trip = {
             id: Utils.generateId(),
             ...tripData,
-            createdAt: new Date().toISOString(),
-            userId: DataManager.getCurrentUser()?.id
+            createdAt: new Date().toISOString()
         };
-        
         appState.trips.push(trip);
         DataManager.data.trips.push(trip);
         DataManager.saveData();
-        
         this.render();
         this.updateStats();
         Toast.show('Viaje agregado exitosamente', 'success');
@@ -213,67 +209,30 @@ const TripManager = {
         document.getElementById('totalBudget').textContent = Utils.formatCurrency(totalBudget);
     }
 };
-
-// Gestión de Tareas
+// --- TAREAS ---
 const TodoManager = {
     add: function(todoData) {
         const todo = {
             id: Utils.generateId(),
             ...todoData,
-            completed: false,
             createdAt: new Date().toISOString(),
             userId: DataManager.getCurrentUser()?.id
         };
-        
         appState.todos.push(todo);
         DataManager.data.todos.push(todo);
         DataManager.saveData();
-        
         this.render();
-        this.updateStats();
         Toast.show('Tarea agregada exitosamente', 'success');
     },
-
-    toggle: function(id) {
-        const todo = appState.todos.find(t => t.id === id);
-        if (todo) {
-            todo.completed = !todo.completed;
-            DataManager.saveData();
-            this.render();
-            this.updateStats();
-        }
-    },
-
-    delete: function(id) {
-        if (confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
-            appState.todos = appState.todos.filter(todo => todo.id !== id);
-            DataManager.data.todos = DataManager.data.todos.filter(todo => todo.id !== id);
-            DataManager.saveData();
-            
-            this.render();
-            this.updateStats();
-            Toast.show('Tarea eliminada', 'info');
-        }
-    },
-
     render: function() {
-        const container = document.getElementById('todoList');
-        
+        const list = document.getElementById('todoList');
+        if (!list) return;
         if (appState.todos.length === 0) {
-            container.innerHTML = `
-                <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-                    <i class="fas fa-tasks" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.3;"></i>
-                    <p>No hay tareas pendientes</p>
-                </div>
-            `;
+            list.innerHTML = `<li style="text-align:center; color:var(--text-secondary); padding:1rem;">No hay tareas</li>`;
             return;
         }
-
-        container.innerHTML = appState.todos.map(todo => `
-            <li class="todo-item ${todo.completed ? 'completed' : ''} animate-fade-in-up">
-                <input type="checkbox" class="todo-checkbox" 
-                       ${todo.completed ? 'checked' : ''} 
-                       onchange="TodoManager.toggle('${todo.id}')">
+        list.innerHTML = appState.todos.map(todo => `
+            <li class="todo-item">
                 <div class="todo-content">
                     <div class="todo-title">${todo.title}</div>
                     <div class="todo-meta">
@@ -281,16 +240,8 @@ const TodoManager = {
                         <span class="todo-priority ${todo.priority}">${todo.priority}</span>
                     </div>
                 </div>
-                <button class="btn-sm btn-delete" onclick="TodoManager.delete('${todo.id}')">
-                    <i class="fas fa-trash"></i>
-                </button>
             </li>
         `).join('');
-    },
-
-    updateStats: function() {
-        const totalTodos = appState.todos.filter(todo => !todo.completed).length;
-        document.getElementById('totalTodos').textContent = totalTodos;
     }
 };
 
@@ -643,3 +594,5 @@ function initializeApp() {
         ExpenseManager.render();
         BookingManager.render();
     }
+
+initializeApp();
