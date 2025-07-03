@@ -4,7 +4,7 @@ TravelPlan is a responsive web-based trip planner built with HTML, CSS, and Java
 
 ## 🌐 Live Site
 
-[View TravelPlan Online](https://your-deployment-link.com) 
+[View TravelPlan Online](https://calebjt7.github.io/travel-organization/)
 
 ## 🚀 Features
 
