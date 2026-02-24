@@ -3,7 +3,7 @@
 TravelPlan is a responsive web-based trip planner built strictly with frontend technologies as a learning project. It allows users to efficiently organize their travels by managing trips, tasks, expenses, and reservations from a single interface using client-side logic.
 
 ## Live Site
-[View TravelPlan Online](#https://calebjt7.github.io/travel-organization/)
+[View TravelPlan Online](https://calebjt7.github.io/travel-organization/)
 
 ## Features
 * Add and manage multiple trips with budget and description.
